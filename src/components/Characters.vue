@@ -1,6 +1,7 @@
 <template>
   <ApolloQuery :query="query">
     <template slot-scope="{ result: { loading, error, data } }">
+      <h1>Lista de personajes Breaking Bad</h1>
       <span v-if="loading">Loading...</span>
       <span v-else-if="error">An error occured</span>
 
