@@ -1,49 +1,31 @@
 <template>
-  <div class="hello">
-    <h1>Personajes Breaking Bad</h1>
-    <ul v-for="p in people" v-bind:key="p.id">
-        <li >
-          {{ p.name }} - {{p.actor}}: <a :href="p.url" target="_blank">+ Info</a>
-        </li>
-    </ul>
-  </div>
+  <ApolloQuery :query="query">
+    <template slot-scope="{ result: { loading, error, data } }">
+      <span v-if="loading">Loading...</span>
+      <span v-else-if="error">An error occured</span>
+
+      <section v-if="data">
+        <ul v-if="data.characters.length">
+            <li :key="p.id" v-for="p in data.characters">
+              {{ p.name }} - {{p.actor}}: <a :href="p.url" target="_blank">+ Info</a>
+            </li><br/>
+        </ul>
+
+        <span v-else>No result :(</span>
+      </section>
+    </template>
+  </ApolloQuery>
 </template>
 
 <script>
-  import axios from 'axios';
+  import { GET_CHARACTERS } from './../graphql/queries';
   export default {
-    name: 'HelloWorld',
+    name: 'Characters',
     data() {
       return {
-        people: []
-      }
+        query: GET_CHARACTERS
+      };
     },
-    async mounted() {
-      try {
-        const result = await axios({
-          method: 'POST',
-          url: 'https://breaking-bad-voting.herokuapp.com/graphql',
-          data: {
-            query: `
-              {
-                characters {
-                  id
-                  name
-                  actor
-                  description
-                  url
-                }
-              }
-            `
-          }
-        });
-        this.people = result.data.data.characters;
-      } catch (error) {
-        console.error = function (message) {  // eslint-disable-line no-console
-          throw new Error(message);
-        };
-      }
-    }
   }
 </script>
 
