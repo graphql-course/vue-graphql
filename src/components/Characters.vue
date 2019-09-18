@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  import request_ from 'request';
   export default {
     name: 'HelloWorld',
     data() {
@@ -19,11 +19,10 @@
       }
     },
     async mounted() {
+      const apiUrl = 'https://breaking-bad-voting.herokuapp.com/graphql';
       try {
-        const result = await axios({
-          method: 'POST',
-          url: 'https://breaking-bad-voting.herokuapp.com/graphql',
-          data: {
+        request_.post(apiUrl, {
+          json: {
             query: `
               {
                 characters {
@@ -36,8 +35,14 @@
               }
             `
           }
+        }, (error, res, body) => {
+          if (error) {
+            console.error = function (message) {  // eslint-disable-line no-console
+              throw new Error(message);
+            };
+          }
+          this.people = body.data.characters;
         });
-        this.people = result.data.data.characters;
       } catch (error) {
         console.error = function (message) {  // eslint-disable-line no-console
           throw new Error(message);
