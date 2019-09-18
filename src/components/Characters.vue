@@ -2,15 +2,17 @@
   <div class="hello">
     <h1>Personajes Breaking Bad</h1>
     <ul v-for="p in people" v-bind:key="p.id">
-        <li >
-          {{ p.name }} - {{p.actor}}: <a :href="p.url" target="_blank">+ Info</a>
-        </li>
+      <li>
+        {{ p.name }} - {{p.actor}}:
+        <a :href="p.url" target="_blank">+ Info</a>
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
-  import request_ from 'request';
+  require('isomorphic-fetch');
+
   export default {
     name: 'HelloWorld',
     data() {
@@ -20,28 +22,27 @@
     },
     async mounted() {
       const apiUrl = 'https://breaking-bad-voting.herokuapp.com/graphql';
+      const characters = `
+        {
+          characters {
+            id
+            name
+            actor
+            description
+            url
+          }
+        }
+      `;
       try {
-        request_.post(apiUrl, {
-          json: {
-            query: `
-              {
-                characters {
-                  id
-                  name
-                  actor
-                  description
-                  url
-                }
-              }
-            `
-          }
-        }, (error, res, body) => {
-          if (error) {
-            console.error = function (message) {  // eslint-disable-line no-console
-              throw new Error(message);
-            };
-          }
-          this.people = body.data.characters;
+        // this.people = body.data.characters;
+        fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: characters }),
+        })
+        .then(res => res.json())
+        .then(res => {
+          this.people = res.data.characters; 
         });
       } catch (error) {
         console.error = function (message) {  // eslint-disable-line no-console
