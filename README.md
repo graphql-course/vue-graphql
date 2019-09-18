@@ -29,8 +29,4 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Use Apollo Client
-https://stackabuse.com/building-graphql-apis-with-vue-js-and-apollo-client/
-#### Install
-```
-npm install apollo-client apollo-link-http apollo-cache-inmemory vue-apollo graphql graphql-tag
-```
+https://medium.com/yld-blog/using-vue-with-apollo-65e2b1297592
